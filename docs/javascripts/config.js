@@ -11,7 +11,8 @@ window.MathJax = {
         bx: "\\textbf{x}",
         bY: "\\textbf{Y}",
         by: "\\textbf{y}",
-        non: "\\nonumber"
+        non: "\\nonumber",
+        ra: "\\rightarrow"
       }
     },
     options: {
