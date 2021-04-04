@@ -1,0 +1,72 @@
+---
+title: Ex. 3.16
+linktitle: Ex 3.16
+type: book
+date: "2021-01-02T00:00:00+01:00"
+# Prev/next pager order (if `docs_section_pager` enabled in `params.toml`)
+weight: 12
+toc: false
+---
+
+> Derive the entries in Table 3.4, the explicit forms for estimators in the orthogonal case.
+
+## Solution 3.16
+
+In the orthogonal case, we have $\bX^T\bX=\bI$.
+
+(1) For best-subset, note that the QR decomposition of $\bX$ can be written as $\bX=\bX\bI$ since $\bX$ is orthogonal. Also, $\hat\beta=(\bX^T\bX)^{-1}\bX\by=\bX\by$. Then, from [Ex. 3.9](ex3-9.md), we know that at each step $q$ we need to choose $k$ such that
+
+\begin{equation}
+    k = \underset{q < k \le p}{\operatorname{argmax}} \bx^T_k\by = \underset{q < k \le p}{\operatorname{argmax}} \hat\beta_k.\non
+\end{equation}
+
+Therefore we verify the formula $\hat\beta_j \cdot \bb{1}(|\hat\beta_j| \ge |\hat\beta_{(M)}|)$.
+
+(2) For ridge regression, we know
+
+\begin{eqnarray}
+    \hat\beta^{\text{ridge}} &=& (\bX^T\bX + \lambda\bI)^{-1}\bX^T\by\non\\
+    &=&\frac{1}{1+\lambda}\bX^T\by  \non\\
+    &=&\frac{1}{1+\lambda}\hat\beta,\non
+\end{eqnarray}
+
+which is the desired formula.
+
+(3) For lasso, we are solving 
+
+\begin{equation}
+    \min_{\beta} \frac{1}{2}\|\by-\bX\beta\|^2_2 + \lambda\|\beta\|_1.\non
+\end{equation}
+
+When $\bX$ is orthogonal, recall that $\hat\beta = \bX^T\by$, we have
+
+\begin{eqnarray}
+    &&\min_{\beta} \left(-\by^T\bX\beta + \frac{1}{2}\beta^T\beta\right) + \gamma \|\beta\|_1\non\\
+    &=&\min_{\beta} \left(-\by^T\bX\beta + \frac{1}{2}\|\beta\|_2^2\right) + \gamma \|\beta\|_1\non\\
+    &=&\min_{\beta} \frac{1}{2}\|\beta\|_2^2 -\hat\beta^T\beta + \gamma \|\beta\|_1\non\\
+    &=&\min_{\beta} \sum_{j=1}^p\left(\frac{1}{2}\beta_i^2 - \hat\beta_i\beta_i + \gamma |\beta_i|\right).\non
+\end{eqnarray}
+
+Therefore it suffices to solve the minimization for each $i$ individually. 
+Consider two cases:
+
+a) When $\hat\beta_j \ge 0$, for optimal solution $\beta^\ast$, we need $\beta^\ast_j\ge 0$. Consider if $\beta^\ast_j < 0$, we could 
+choose $\beta^{\text{new}} = -\beta^\ast -\epsilon$ for some $\epsilon>0$, so that $\beta^\ast$ is strictly less optimal than $\beta^{\text{new}}$ (which contradicts the optimality of $\beta^\ast$.)
+
+Therefore, we need to solve
+
+\begin{equation}
+    \min_{\beta_j\ge 0}\frac{1}{2}\beta_j^2 + (\gamma-\hat\beta_j)\beta_j,\non
+\end{equation} 
+
+which is quadratic in $\beta_j$ and its solution is easily seen to be $(\hat\beta_j-\gamma)_+$.
+
+b) When $\hat\beta_j < 0$, similarly, we need $\beta_j < 0$. Thus, we need to solve
+
+\begin{equation}
+    \min_{\beta_j < 0}\frac{1}{2}\beta_j^2 - (\gamma+\hat\beta_j)\beta_j,\non
+\end{equation}	 
+
+which has the solution $(\hat\beta_j + \gamma)_-$.
+
+In both cases, the solution can be written as $\text{sign}(\hat\beta_j)(|\hat\beta_j|-\lambda)_+$.
