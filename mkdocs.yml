@@ -59,7 +59,9 @@ markdown_extensions:
       permalink: true
   - pymdownx.arithmatex:
       generic: true
-
+  - pymdownx.highlight:
+      linenums: true
+  - pymdownx.superfences
 
 extra_javascript:
   - javascripts/config.js
