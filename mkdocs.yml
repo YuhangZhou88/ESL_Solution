@@ -1,0 +1,77 @@
+site_name: A Solution Manual for ESL
+
+
+# site_url: https://squidfunk.github.io/mkdocs-material/
+site_author: Yuhang Zhou
+site_description: >-
+  Create a branded static site from a set of Markdown files to host the
+  documentation of your Open Source or commercial project – customizable,
+  searchable, mobile-friendly, 40+ languages
+# Repository
+repo_name: YuhangZhou88/esl_test
+repo_url: https://github.com/YuhangZhou88/esl_test
+edit_uri: ""
+
+# Configuration
+theme:
+  name: material
+  feature:
+    - navigation.expand
+
+  # Static files
+  static_templates:
+    - 404.html
+
+  # Don't include MkDocs' JavaScript
+  include_search_page: false
+  search_index_only: true
+
+  # Default values, taken from mkdocs_theme.yml
+  language: en
+  features:
+    # - navigation.instant
+    - navigation.sections
+    - navigation.tabs
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: light green
+      accent: light green
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: assets/favicon.png
+  icon:
+    logo: logo
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+
+
+extra_javascript:
+  - javascripts/config.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+        
+# nav:
+#   - Home: index.md
+#   - Chp2: 
+#     - Ex. 2.1: 2-Overview-of-Supervised-Learning/ex2-1.md
+
+
+# pages:
+#   - 2 Over:
+#     - Ex. 2.1 : '02-Overview-of-Supervised-Learning/ex2-1.md'
