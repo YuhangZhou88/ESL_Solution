@@ -69,9 +69,9 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
         
 # nav:
-#   - Home: index.md
-#   - Chp2: 
-#     - Ex. 2.1: 2-Overview-of-Supervised-Learning/ex2-1.md
+#    - Home: index.md
+#    - Chp2: 
+#      - Ex. 2.1: 2-Overview-of-Supervised-Learning/ex2-1.md
 
 
 # pages:

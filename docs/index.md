@@ -1,4 +1,9 @@
-# About
+
+Welcome!
+## Introduction
+This is an unofficial solution manual of The Element of Statistical Learning (ESL).
+
+For programming exercises, relevant `Python` scripts are provided.
 
 For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
