@@ -10,6 +10,8 @@ toc: false
 
 > Read about conjugate gradient algorithms (Murray et al., 1981, for example)\cite{gill2019practical}, and establish a connection between these algorithms and partial least squares.
 
+## Solution 3.18
+
 We briefly review the conjugate gradient algorithm described in Murray et al., 1981. The conjugate-gradient method described in Section 4.8.3.1 in \cite{gill2019practical} can be applied to minimize the quadratic function $c^T + \frac{1}{2}x^TGx$, where $G$ is symmetric and positive definite, it computes the solution of the system
 
 \begin{equation}
