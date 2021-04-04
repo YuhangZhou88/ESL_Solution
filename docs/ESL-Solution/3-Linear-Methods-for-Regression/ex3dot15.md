@@ -28,7 +28,7 @@ We are essentially solving
 
 where $\bb{S}=\bX^T\bX$ is the sample covariance matrix of the $\bx_j$.
 
-We start with the case $m=1$, which immediately gives what we call the first *canonical covariance* variable (see [Ex. 3.20]) with
+We start with the case $m=1$, which immediately gives what we call the first *canonical covariance* variable (see [Ex. 3.20](ex3dot20.md)) with
 
 \begin{equation}
     \hat\alpha_1 = \bX^T\by/\|\bX^T\by\|_2.\non
