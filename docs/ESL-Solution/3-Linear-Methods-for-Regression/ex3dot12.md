@@ -1,0 +1,62 @@
+---
+title: Ex. 3.12
+linktitle: Ex 3.12
+type: book
+date: "2021-01-02T00:00:00+01:00"
+# Prev/next pager order (if `docs_section_pager` enabled in `params.toml`)
+weight: 12
+toc: false
+---
+
+> Show that the ridge regression estimates can be obtained by ordinary least squares regression on an augmented data set. We augment the centered matrix $\textbf{X}$ with $p$ additional rows $\sqrt{\lambda}\textbf{I}$, and augment $\textbf{y}$ with $p$ zeros. By introducing artificial data having response value zero, the fitting procedure is forced to shrink the coefficients toward zero. This is related the idea of *hints* due to Abu-Mostafa (1995), where model constraints are implemented by adding artificial data examples that satisfy them.
+
+## Solution 3.12
+
+We write
+
+\begin{equation}
+    \tilde{\textbf{X}} = \begin{pmatrix}
+                    \textbf{X}\\
+                    \sqrt \lambda \textbf{I}_p
+                    \end{pmatrix} 
+    \text{ and }
+    \tilde{\textbf{y}} = \begin{pmatrix}
+                    \textbf{y}\\
+                    \textbf{0}_p
+                    \end{pmatrix},\nonumber
+\end{equation}
+
+where $\textbf{I}_p$ is a $p\times p$ identity matrix, and $\textbf{0}_p$ is a $p\times 1$ vector. 
+Thus we have
+
+\begin{equation}
+    \tilde{\textbf{X}}^T\tilde{\textbf{X}} = \begin{pmatrix}
+                    \textbf{X}^T&\sqrt \lambda \textbf{I}_p
+                    \end{pmatrix} 
+                    \begin{pmatrix}
+                    \textbf{X}\\
+                    \sqrt \lambda \textbf{I}_p
+                    \end{pmatrix}=\textbf{X}^T\textbf{X} + \lambda\textbf{I}_p\nonumber
+\end{equation}
+
+and 
+
+\begin{equation}
+    \tilde{\textbf{X}}^T\textbf{y} = 
+    \begin{pmatrix}
+        \textbf{X}^T&\sqrt \lambda \textbf{I}_p
+    \end{pmatrix}
+    \begin{pmatrix}
+        \textbf{y}\\
+        \textbf{0}_p	
+    \end{pmatrix} = \textbf{X}^T\textbf{y}.\nonumber
+\end{equation}
+
+Then we have
+
+\begin{eqnarray}
+    \hat\beta_{\text{new}} &=& (\tilde{\textbf{X}}^T\tilde{\textbf{X}})^{-1}\tilde{\textbf{X}}^T\tilde{\textbf{y}}\nonumber\\
+    &=& (\textbf{X}^T\textbf{X} + \lambda\textbf{I}_p)^{-1}\textbf{X}^T\textbf{y},\nonumber
+\end{eqnarray}
+
+which is the solution to ridge regression with parameter $\lambda$.
