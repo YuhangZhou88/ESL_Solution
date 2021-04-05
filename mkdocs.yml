@@ -30,7 +30,7 @@ theme:
   language: en
   features:
     # - navigation.instant
-    - navigation.sections
+    # - navigation.sections
     - navigation.tabs
   palette:
     - scheme: default
