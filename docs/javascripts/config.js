@@ -9,6 +9,7 @@ window.MathJax = {
       tags: 'ams',
       macros: {
         bb: ["{\\textbf #1}", 1],
+        bA: "\\textbf{A}",
         bX: "\\textbf{X}",
         bx: "\\textbf{x}",
         bY: "\\textbf{Y}",
@@ -22,6 +23,7 @@ window.MathJax = {
         bV: "\\textbf{V}",
         bU: "\\textbf{U}",
         bD: "\\textbf{D}",
+        bM: "\\textbf{M}",
         rl: "\\rangle",
         bm: ["\\boldsymbol #1", 1]
       }
