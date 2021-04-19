@@ -55,13 +55,6 @@ There is an errata page maintained in the [official site](https://web.stanford.e
     ???tldr "Text"
         ![](../img/errata/errata-pp-416.png)
 
-## Chapter 12 
-
-1. On page 437, equation (12.45), it should be $\frac{\lambda}{2}$ from the context (assuming (12.47) is correct).
-   
-    ???tldr "Text"
-        ![](../img/errata/errata-pp-437.png)  
-
 
 ## Chapter 13
 
