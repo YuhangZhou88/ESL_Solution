@@ -80,7 +80,7 @@ There is an errata page maintained in the [official site](https://web.stanford.e
     ???tldr "Text"
         ![](../img/errata/errata-pp-580.png)
 
-4. In Ex. 14.11, I guess it's the transposes of $z_i$, i.e., $z_i^T$ are the *rows*.
+4. In [Ex. 14.11](_14-Unsupervised-Learning/ex14-11.md), I guess it's the transposes of $z_i$, i.e., $z_i^T$ are the *rows*.
 
     ???tldr "Text"
         ![](../img/errata/errata-pp-581.png)

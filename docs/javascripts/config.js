@@ -24,6 +24,7 @@ window.MathJax = {
         bU: "\\textbf{U}",
         bD: "\\textbf{D}",
         bM: "\\textbf{M}",
+        bS: "\\textbf{S}",
         rl: "\\rangle",
         bm: ["\\boldsymbol #1", 1]
       }
