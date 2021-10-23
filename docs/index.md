@@ -4,6 +4,8 @@
 
 This site contains self-attempted solutions to exercises in the great textbook [The Elements of Statistical Learning](https://web.stanford.edu/~hastie/ElemStatLearn/) by [Prof. Trevor Hastie](https://web.stanford.edu/~hastie/), [Prof. Robert Tibshirani](https://statweb.stanford.edu/~tibs/) and [Prof. Jerome Friedman](https://statweb.stanford.edu/~jhf/).
 
+May I ask you for a Github ⭐ if you find this repo helpful?
+
 #### Usage
 * Start browsing [here](ESL-Solution/2-Overview-of-Supervised-Learning/ex2-1.md).
 
