@@ -9,7 +9,7 @@ May I ask you for a Github ⭐ if you find this repo helpful?
 #### Usage
 * Start browsing [here](ESL-Solution/2-Overview-of-Supervised-Learning/ex2-1.md).
 
-* To quickly navigate to a particular solution, please search exercise numbering in 🔍 in the top.
+* To quickly navigate to a particular solution, please search exercise number  in 🔍 in the top.
 
 #### Version
 The version of the textbook this site is using is *Second Edition (corrected 12th printing Jan 2017)* and book PDF can be downloaded [here](https://web.stanford.edu/~hastie/ElemStatLearn/).
