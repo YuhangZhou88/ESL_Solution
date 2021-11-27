@@ -68,9 +68,6 @@ extra_javascript:
 
 copyright: 'Copyright &copy; 2021-2021 Yuhang Zhou'  
 
-# google_analytics:
-#   - UA-194800147-1
-#   - auto
 extra:
   analytics:
     provider: google
