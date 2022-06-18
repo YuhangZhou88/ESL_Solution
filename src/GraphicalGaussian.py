@@ -1,0 +1,281 @@
+import numpy as np
+from sklearn.base import BaseEstimator
+
+
+def _partition(X, idx):
+    """
+    Partition the matrix X into part 1: all but the idx-th row and column,
+    and part 2: the idx-th row and column
+
+    Parameters
+    ----------
+    X : array-like of shape (n_features, n_features)
+    idx: the index for partion
+
+    Returns
+    -------
+    X11: the upper left sub-matrix
+    X12: the upper right vector
+    X21: the lower left vector
+    X22: X[j][j]
+    """
+    n_features = X.shape[0]
+    indices = np.arange(n_features)
+
+    X11 = X[indices != idx, :]
+    X11 = X11[:, indices != idx]
+
+    X22 = X[idx][idx]
+
+    X21 = X[idx, indices != idx]
+    X21 = X21.reshape((1, n_features - 1))
+
+    X12 = X[indices != idx, idx]
+    X12 = X12.reshape((n_features - 1, 1))
+
+    return [X11, X12, X21, X22]
+
+
+def _solve(W, S, Gamma, idx):
+    W11 = _partition(W, idx)[0]
+    Gamma12 = _partition(Gamma, idx)[1]
+    S12 = _partition(S, idx)[1]
+
+    zero_indices = np.where(Gamma12 == 0)[0]
+    S12_new = S12[zero_indices]
+    W11_new = W11[zero_indices, :]
+    W11_new = W11_new[:, zero_indices]
+
+    beta_ast = np.linalg.inv(W11_new) @ S12_new
+    beta = np.zeros(Gamma12.shape)
+    beta[zero_indices] = beta_ast
+
+    return beta
+
+
+def _update(W, idx, beta):
+    n_features = W.shape[0]
+    indices = np.arange(n_features)
+    W11 = _partition(W, idx)[0]
+    updated_W12 = W11 @ beta
+    W[indices != idx, idx] = updated_W12.ravel()
+    W[idx, indices != idx] = updated_W12.ravel()
+    return
+
+
+def _update_theta(Theta, Gamma, W, S, idx):
+    beta = _solve(W, S, Gamma, idx)
+    S22 = _partition(S, idx)[3]
+    W12 = _partition(W, idx)[1]
+
+    try:
+        theta22 = 1 / (S22 - W12.T @ beta)
+        theta12 = (-theta22) * beta
+    except FloatingPointError as e:
+        e.args = (e.args[0] + '. Error happened, check for details.')
+        raise e
+
+    Theta[idx, idx] = theta22
+
+    n_feature = W.shape[0]
+    indices = np.arange(n_feature)
+    Theta[idx, indices != idx] = theta12.ravel()
+    return
+
+
+class GraphicalGaussian(BaseEstimator):
+    def __init__(self, tol=1e-4, max_iter=100, verbose=False):
+        self.tol = tol
+        self.max_iter = max_iter
+        self.verbose = verbose
+        self.stop_reason = None
+        self.n_iter = None
+        self.theta_ = None
+        self.covariance_ = None
+
+    def fit(self, S, Gamma):
+        # Covariance does not make sense for a single feature
+        S = self._validate_data(S, ensure_min_features=2,
+                                ensure_min_samples=2,
+                                estimator=self)
+
+        # Adjacent matrix does not make sense for a single feature
+        Gamma = self._validate_data(Gamma, ensure_min_features=2,
+                                    ensure_min_samples=2,
+                                    estimator=self)
+
+        n_feature = S.shape[0]
+        W = S.copy()
+        for n_iter in range(self.max_iter):
+            if self.verbose:
+                print('executing {}th iteration'.format(n_iter + 1))
+
+            W_last = W.copy()
+
+            for idx in range(n_feature):
+                if self.verbose:
+                    print('executing for {}th variable'.format(idx + 1))
+
+                beta = _solve(W, S, Gamma, idx)
+                _update(W, idx, beta)
+
+                if np.linalg.norm(W - W_last) < self.tol:
+                    self.stop_reason = 'Covariance estimation converged'
+                    break
+
+        if n_iter + 1 == self.max_iter:
+            self.stop_reason = 'Maximum iteration reached'
+
+        # final cycle
+        Theta = np.zeros(S.shape)
+        for idx in range(n_feature):
+            _update_theta(Theta, Gamma, W, S, idx)
+
+        self.theta_ = Theta
+        self.covariance_ = W
+        self.n_iter = n_iter
+        return self
+
+
+# S = np.array([
+#     [10, 1, 5, 4],
+#     [1, 10, 2, 6],
+#     [5, 2, 10, 3],
+#     [4, 6, 3, 10]
+# ], dtype=float)
+#
+# Gamma = np.array([
+#     [0, 0, 1, 0],
+#     [0, 0, 0, 1],
+#     [1, 0, 0, 0],
+#     [0, 1, 0, 0]
+# ], dtype=float)
+#
+# model = GraphicalGaussian(verbose=True)
+# model.fit(S, Gamma)
+#
+# print(1)
+
+
+def _missing_indices(X, i):
+    return np.argwhere(np.isnan(X[i])).ravel()
+
+
+def _observed_indices(X, i):
+    return np.argwhere(~np.isnan(X[i])).ravel()
+
+
+class GraphicalGaussianEM(BaseEstimator):
+    def __init__(self,
+                 graph_Gaussian_obj=GraphicalGaussian(),
+                 init_mean=None,
+                 init_cov=None,
+                 tol=1e-4,
+                 max_iter=100,
+                 verbose=False):
+        self.init_mean = init_mean
+        self.init_cov = init_cov
+        self.tol = tol
+        self.max_iter = max_iter
+        self.verbose = verbose
+        self.graph_Gaussian_Obj = graph_Gaussian_obj
+        self.covariance_ = None
+        self.mean_ = None
+        self.imputed_X = None
+
+    def _initCov(self, X):
+        filled_X = X.copy()
+        inds = np.where(np.isnan(filled_X))
+        filled_X[inds] = np.take(self.mean_, inds[1])
+        self.covariance_ = np.cov(filled_X, rowvar=False)
+
+    def _init(self, X, init_mean=None, init_cov=None):
+        if init_mean is None:
+            self.mean_ = np.nanmean(X, axis=0)
+        if init_cov is None:
+            self._initCov(X)
+
+    def _e_step(self, X):
+        n_samples = X.shape[0]
+        for i in range(n_samples):
+            if self.verbose:
+                print('executing {}-th sample'.format(i + 1))
+
+            mi, oi = _missing_indices(X, i), _observed_indices(X, i)
+            if len(mi) == 0:
+                continue
+
+            sigma_mi_oi, sigma_oi_oi = self.covariance_[np.ix_(mi, oi)], self.covariance_[np.ix_(oi, oi)]
+            sigma_oi_oi_inv = np.linalg.inv(sigma_oi_oi)
+
+            imputed = self.mean_[mi] + sigma_mi_oi @ sigma_oi_oi_inv @ (X[i, oi] - self.mean_[oi])
+            self.imputed_X[i, mi] = imputed.ravel()
+
+    def _m_step(self, Gamma):
+        """
+        Use Modified Regression to Estimated Sigma
+        Parameters
+        ----------
+        X
+        Gamma
+
+        Returns
+        -------
+
+        """
+        self.mean_ = np.nanmean(self.imputed_X, axis=0)
+        self.covariance_ = self.graph_Gaussian_Obj.fit(self.covariance_, Gamma).covariance_
+
+    def _gap(self, mean_old, cov_old):
+        return np.linalg.norm(self.mean_ - mean_old) + np.linalg.norm(self.covariance_ - cov_old)
+
+    def fit(self, X, Gamma):
+        self._init(X, init_mean=self.init_mean, init_cov=self.init_cov)
+        self.imputed_X = X.copy()
+        for n_iter in range(self.max_iter):
+            if self.verbose:
+                print('executing {}-th iteration'.format(n_iter + 1))
+
+            mean_old = self.mean_.copy()
+            cov_old = self.covariance_.copy()
+
+            self._e_step(X)
+            self._m_step(Gamma)
+
+            if self._gap(mean_old, cov_old) < self.tol:
+                if self.verbose:
+                    print('stop because convergence criteria met')
+                break
+
+        return self
+
+
+# S = np.array([
+#     [10, 1, 5, 4],
+#     [1, 10, 2, 6],
+#     [5, 2, 10, 3],
+#     [4, 6, 3, 10]
+# ], dtype=float)
+#
+
+# X = np.array([
+#     [1, np.nan, 3, 4],
+#     [1, 10, 2, 6],
+#     [5, 1, np.nan, 3],
+#     [4, 6, 3, 10]
+# ], dtype=float)
+#
+# Gamma = np.array([
+#     [0, 0, 1, 0],
+#     [0, 0, 0, 1],
+#     [1, 0, 0, 0],
+#     [0, 1, 0, 0]
+# ], dtype=float)
+#
+# model = GraphicalGaussianEM(verbose=True)
+# model.fit(X, Gamma)
+#
+# print(1)
+
+
+
